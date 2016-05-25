@@ -1,0 +1,61 @@
+Serial Port Opened.
+connected to mysql as id 37
+Checked Mysql on start and light 1 is off.
+Checked Mysql on start and light 2 is off.
+Checked Mysql on start and light 3 is off.
+Checked Mysql on start and light 4 is off.
+Serial Data received: b
+1457262271141
+Serial Data received: a
+1457262305766
+Serial Data received: a
+1457262364269
+Serial Data received: a
+1457262390533
+Closing Connection (Every 3 Hours).
+RE-connected to mysql as id 38
+Closing Connection (Every 3 Hours).
+RE-connected to mysql as id 39
+Serial Data received: a
+1457291462458
+Serial Data received: a
+1457291613909
+Closing Connection (Every 3 Hours).
+RE-connected to mysql as id 40
+Serial Data received: a
+1457300192909
+Serial Data received: a
+1457300193805
+Serial Data received: a
+1457300369378
+Serial Data received: a
+1457300369761
+Connected New Socket.
+Connected New Socket.
+Connected New Socket.
+Serial Data received: a
+1457304556075
+Serial Data received: a
+1457304556950
+Closing Connection (Every 3 Hours).
+RE-connected to mysql as id 41
+Serial Data received: a
+1457306681407
+Serial Data received: a
+1457307318160
+Serial Data received: a
+1457310735336
+Serial Data received: a
+1457312183897
+Serial Data received: a
+1457312365557
+Serial Data received: a
+1457312426243
+Closing Connection (Every 3 Hours).
+RE-connected to mysql as id 42
+Serial Data received: a
+1457321029847
+Serial Data received: a
+1457321041373
+Serial Data received: a
+1457321271382

@@ -1,0 +1,144 @@
+<!doctype html>
+<html>
+  <head>
+    <title>Hardy Automation</title>
+    <link rel="icon" href="/static/favicon.ico" type="image/x-icon">
+    <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
+    <link rel="stylesheet" type="text/css" href="/static/css/main.css">
+    <style>
+
+    </style>
+  </head>
+  <body>
+    <h1>Home Automation</h1>
+    <br>
+    <button id="light1Button" type="button" class="btn btn-info" onClick="changeButton(1);">Light 1 is Off</button>
+    <br>
+    <button id="light2Button" type="button" class="btn btn-info" onClick="changeButton(2);">Light 2 is Off</button>
+    <br>
+    <button id="light3Button" type="button" class="btn btn-info" onClick="changeButton(3);">Light 3 is Off</button>
+    <br>
+    <button id="light4Button" type="button" class="btn btn-info" onClick="changeButton(4);">Light 4 is Off</button>
+    <br>
+    <div style="height:300px;"></div>
+    <button type="button" class="btn btn-info" onClick="location.reload();">Refresh</button>
+    <script src="/socket.io/socket.io.js"></script>
+    <script>
+	function cpuOn() {
+	// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp=new XMLHttpRequest();
+		xmlhttp.open("GET","/cpuOn",true);
+		xmlhttp.send();
+			}
+    var buttonOnColor = "cyan";
+    var buttonOffColor = "#000099";
+    function changeButton(lightNumber)
+    {
+      tempIdString = "light" + lightNumber + "Button";
+      if(lightState[lightNumber] == 0)
+      {
+        messageOut = lightNumber + "on";
+        socket.emit('lightState', messageOut);
+        tempButtonString = "Switch " + lightNumber + " is On";
+        document.getElementById(tempIdString).innerHTML = tempButtonString;
+        document.getElementById(tempIdString).style.background = buttonOffColor;
+        document.getElementById(tempIdString).style.color = buttonOnColor;
+        lightState[lightNumber] = 1;
+        document.activeElement.blur()
+      }
+      else if(lightState[lightNumber] == 1)
+      {
+        messageOut = lightNumber + "off";
+        socket.emit('lightState', messageOut);
+        tempButtonString = "Switch " + lightNumber + " is Off";
+        document.getElementById(tempIdString).innerHTML = tempButtonString;
+        document.getElementById(tempIdString).style.background = buttonOnColor;
+        document.getElementById(tempIdString).style.color = buttonOffColor;
+        lightState[lightNumber] = 0;
+        document.activeElement.blur()
+      }
+    }
+    </script>
+<script>
+  var lightState = [0,0,0,0];
+  var socket = io.connect('http://192.168.1.155:3000');
+  socket.on('lightState', function(msg){
+    console.log(msg);
+    if(msg == '1on')
+    {
+      lightState[1] = 1;
+      document.getElementById("light1Button").innerHTML = "Switch 1 is On";
+      document.getElementById("light1Button").style.background = buttonOnColor;
+      document.getElementById("light1Button").style.color = buttonOffColor;
+      //turn light on
+    }
+    else if(msg == '1off')
+    {
+      //turn light off
+      lightState[1] = 0;
+      document.getElementById("light1Button").innerHTML = "Switch 1 is Off";
+      document.getElementById("light1Button").style.background = buttonOffColor;
+      document.getElementById("light1Button").style.color = buttonOnColor;
+    }
+
+    if(msg == '2on')
+    {
+      lightState[2] = 1;
+      document.getElementById("light2Button").innerHTML = "Switch 2 is On";
+      document.getElementById("light2Button").style.background = buttonOnColor;
+      document.getElementById("light2Button").style.color = buttonOffColor;
+      //turn light on
+    }
+    else if(msg == '2off')
+    {
+      //turn light off
+      lightState[2] = 0;
+      document.getElementById("light2Button").innerHTML = "Switch 2 is Off";
+      document.getElementById("light2Button").style.background = buttonOffColor;
+      document.getElementById("light2Button").style.color = buttonOnColor;
+    }
+    if(msg == '3on')
+    {
+      lightState[3] = 1;
+      document.getElementById("light3Button").innerHTML = "Switch 3 is On";
+      document.getElementById("light3Button").style.background = buttonOnColor;
+      document.getElementById("light3Button").style.color = buttonOffColor;
+      //turn light on
+    }
+    else if(msg == '3off')
+    {
+      //turn light off
+      lightState[3] = 0;
+      document.getElementById("light3Button").innerHTML = "Switch 3 is Off";
+      document.getElementById("light3Button").style.background = buttonOffColor;
+      document.getElementById("light3Button").style.color = buttonOnColor;
+    }
+    if(msg == '4on')
+    {
+      lightState[4] = 1;
+      document.getElementById("light4Button").innerHTML = "Switch 4 is On";
+      document.getElementById("light4Button").style.background = buttonOnColor;
+      document.getElementById("light4Button").style.color = buttonOffColor;
+      //turn light on
+    }
+    else if(msg == '4off')
+    {
+      //turn light off
+      lightState[4] = 0;
+      document.getElementById("light4Button").innerHTML = "Switch 4 is Off";
+      document.getElementById("light4Button").style.background = buttonOffColor;
+      document.getElementById("light4Button").style.color = buttonOnColor;
+    }
+  });
+    </script>
+    <div style="text-align:left;clear:both;position:absolute;bottom:10px;Left:10px;">
+    <br>
+    <a href="javascript:void(0)" onClick="cpuOn();">WAKE CPU</a>
+    <br>
+    <br>
+    <a href="/static/logfile.html">LOGFILE</a>
+    <br>
+    <a href="/static/errorfile.html">ERRORFILE</a>
+    <div>
+  </body>
+</html>

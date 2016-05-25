@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Logfile HardyAuto</title>
+<script>
+function loadXMLDoc()
+{
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp=new XMLHttpRequest();
+  }
+else
+  {// code for IE6, IE5
+  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+xmlhttp.onreadystatechange=function()
+  {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+	var text = xmlhttp.responseText;
+	var breaks = text.split('\n');
+    	var newLines = "";
+    	for(var i = 0; i < breaks.length; i ++){
+      	newLines = newLines + breaks[i] + ' <br> ';
+    	}
+    	document.getElementById("myParagraph").innerHTML=newLines;
+    }
+  }
+xmlhttp.open("GET","/static/LOGFILE.txt",true);
+xmlhttp.send();
+}
+setInterval(function() {loadXMLDoc();}, 500);
+function resetLog()
+{
+if (window.XMLHttpRequest)
+  {// code for IE7+, Firefox, Chrome, Opera, Safari
+  xmlhttp=new XMLHttpRequest();
+  }
+else
+  {// code for IE6, IE5
+  xmlhttp=new ActiveXObject("Microsoft.XMLHTTP");
+  }
+xmlhttp.onreadystatechange=function()
+  {
+  if (xmlhttp.readyState==4 && xmlhttp.status==200)
+    {
+	var text = xmlhttp.responseText;
+    }
+  }
+xmlhttp.open("GET","/resetLog",true);
+xmlhttp.send();
+}
+</script>
+</head>
+<body>
+<a href="/">Home</a>
+<h2>LOGFILE HARDY AUTOMATION</h2>
+
+<button type="button" onclick="loadXMLDoc()">Refresh Content</button>
+<button type="button" onclick="resetLog()">Clear Log</button>
+<br>
+<div id="myDiv" style="width:300px;margin-bottom:300px;"><p id="myParagraph"></p></div>
+
+
+</body>
+</html>
