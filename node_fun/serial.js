@@ -1,8 +1,8 @@
 var mysql      = require('mysql');
 var connection = mysql.createConnection({
   host     : 'localhost',
-  user     : 'root',
-  password : '**pass**'
+  user     : 'XXXXXX'
+  password : 'XXXXXX'
 });
 var wol = require('wake_on_lan');
 
@@ -21,8 +21,8 @@ setInterval(function(){  /// EVERY 3 HOUR RESET CONNECTION MYSQL
 });
   connection = mysql.createConnection({
   host     : 'localhost',
-  user     : 'root',
-  password : '**pass**'
+  user     : 'XXXXXX'
+  password : 'XXXXXX'
 });
   connection.connect(function(err) {
   if (err) {
@@ -44,9 +44,7 @@ http.get(options, function(resp){
     //do something with chunk
       if(parseInt(chunk) == 1)
       {
-          console.log("SendingWake");
-          wol.wake('FC:AA:14:79:B3:A3');
-          setWolOff(true);
+
       }
       else
       {
@@ -57,24 +55,21 @@ http.get(options, function(resp){
 });
 }, 1000 * 60 * 5); // every five minutes check
 
-function setWolOff(changeBack)
+function triggerWol()
 {
-    if(changeBack)
-    {
     options = {
-      host: 'slackiswack.com',
+      host: '192.168.1.156',
       port: 80,
-      path: '/wol.php?set=off'
-    };
-
+      path: '/wol'
+	};
     http.get(options, function(resp){
       resp.on('data', function(chunk){
     //switching back mysql value
+	console.log(chunk);
       });
     }).on("error", function(e){
       console.log("Got error: " + e.message);
     });
-    }
 }
 
 
@@ -96,8 +91,7 @@ serialPort.open(function (error) {
     console.log('Serial Data received: ' + data);
     if(data == 'h')
     {
-      wol.wake('FC:AA:14:79:B3:A3');
-      var magic_packet = wol.createMagicPacket('FC:AA:14:79:B3:A3');
+      triggerWol();
     }
     if(data == 'a' || data == 'b')
     {
@@ -215,6 +209,21 @@ serialPort.open(function (error) {
       io.emit("lightState", '2off');
       io.emit("lightState", '3off');
       io.emit("lightState", '4off');
+
+var getVarSendOff = "/?r=0&g=0&b=0";
+	options = {
+      host: '192.168.1.23',
+      port: 80,
+      path: getVarSendOff
+	};
+    http.get(options, function(resp){
+      resp.on('data', function(chunk){
+    //switching back mysql value
+	
+      });
+    }).on("error", function(e){
+      console.log("Got error: " + e.message);
+    });
 
       console.log('Turned off all lights from Button');
       connection.query(tempQuery, function(err, rows, fields) {
@@ -365,7 +374,8 @@ app.get('/allOff', function(request, response) {
     io.emit("lightState", '2off');
     io.emit("lightState", '3off');
     io.emit("lightState", '4off');
-
+	
+	
     console.log('Turned off all lights from HTTP Request');
     response.send('Lights All Off.');
     connection.query(tempQuery, function(err, rows, fields) {
@@ -377,11 +387,87 @@ app.get('/allOff', function(request, response) {
    response.send('Lights already off.');
    console.log('Received on from HTTP Request, but already on.');
 }
+var getVarSendOff = "/?r=0&g=0&b=0";
+	options = {
+      host: '192.168.1.23',
+      port: 80,
+      path: getVarSendOff
+	};
+    http.get(options, function(resp){
+      resp.on('data', function(chunk){
+    //switching back mysql value
+	
+      });
+    }).on("error", function(e){
+      console.log("Got error: " + e.message);
+    });
+var tempQuery = "UPDATE nodejs.colors SET r = 0, g = 0, b = 0 WHERE id = 1";
+      connection.query(tempQuery, function(err, rows, fields) {
+      if (err) throw err;
+      });
 });
 app.get('/cpuOn', function(request, response) {
-    wol.wake('FC:AA:14:79:B3:A3');
-    console.log("Waking Computer.");
-    response.send('Waking Computer.');
+    var num = request.param('num');
+    if(num == 7226)
+    {
+      triggerWol();
+      console.log("Waking Computer.");
+
+    }
+    else
+    {
+      console.log("Wrong Pass for WOL.");
+    }
+    fs.readFile('/node_fun/index.html', function(err, data){
+        response.send(data.toString());
+    });
+    
+});
+app.get('/getRGB', function(request, response) {
+    console.log("Sending RGB info.");
+	var tempQuery = "SELECT * FROM nodejs.colors WHERE id = 1";
+connection.query(tempQuery, function(err, rows, fields) {
+      if (err) throw err;
+      
+	  var redStatus = rows[0].r;
+	  var greenStatus = rows[0].g;
+	  var blueStatus = rows[0].b;
+	  var tempValueSend = redStatus + "\n" + greenStatus + "\n" + blueStatus;
+	  response.send(tempValueSend);
+});
+
+});
+app.get('/rgblight', function(request, response) {
+	var red = request.param('r');
+	var green = request.param('g');
+	var blue = request.param('b');
+	if(red && green && blue)
+	{
+		var tempQuery = "UPDATE nodejs.colors SET r = " + red + ", g = " + green + ", b = " + blue + " WHERE id = 1";
+		connection.query(tempQuery, function(err, rows, fields) {
+      if (err) throw err;
+      });
+	}
+	var getVarSend = "/?r="+red+"&g="+green+"&b="+blue;
+	options = {
+      host: '192.168.1.23',
+      port: 80,
+      path: getVarSend
+	};
+	console.log(getVarSend);
+    http.get(options, function(resp){
+      resp.on('data', function(chunk){
+    //switching back mysql value
+	
+      });
+    }).on("error", function(e){
+      console.log("Got error: " + e.message);
+    });
+    console.log("Updating color.");
+	console.log("red: " + red);
+	console.log("green: " + green);
+	console.log("blue: " + blue);
+    response.send('Updated color.');
 });
 app.get('/resetLog', function(request, response) {
 	fs.truncate('/node_fun/static/LOGFILE.txt', 0, function(){console.log("Reset Log.");})

@@ -1,0 +1,7 @@
+
+Error: Connection lost: The server closed the connection.
+    at Protocol.end (/home/pi/node_fun/node_modules/mysql/lib/protocol/Protocol.js:103:13)
+    at Socket.<anonymous> (/home/pi/node_fun/node_modules/mysql/lib/Connection.js:88:28)
+    at Socket.emit (events.js:117:20)
+    at _stream_readable.js:944:16
+    at process._tickCallback (node.js:442:13)

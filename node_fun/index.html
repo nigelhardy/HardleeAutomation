@@ -6,10 +6,63 @@
     <link rel="stylesheet" type="text/css" href="/static/css/bootstrap.css">
     <link rel="stylesheet" type="text/css" href="/static/css/main.css">
     <style>
-
     </style>
+    <script>
+	function getQueryVariable(variable)
+{
+       var query = window.location.search.substring(1);
+       var vars = query.split("&");
+       for (var i=0;i<vars.length;i++) {
+               var pair = vars[i].split("=");
+               if(pair[0] == variable){return pair[1];}
+       }
+       return(false);
+}
+RGBToHex = function(r,g,b){
+    var bin = r << 16 | g << 8 | b;
+    return (function(h){
+        return new Array(7-h.length).join("0")+h
+    })(bin.toString(16).toUpperCase())
+}
+function hexToRgb(hex) {
+    var result = /^#?([a-f\d]{2})([a-f\d]{2})([a-f\d]{2})$/i.exec(hex);
+    return result ? {
+        r: parseInt(result[1], 16),
+        g: parseInt(result[2], 16),
+        b: parseInt(result[3], 16)
+    } : null;
+}
+function sendLight(getInput) {
+	// code for IE7+, Firefox, Chrome, Opera, Safari
+		xmlhttp=new XMLHttpRequest();
+		xmlhttp.open("GET",getInput,true);
+		xmlhttp.send();
+			}
+function convert()
+{
+	var color = document.getElementById("html5colorpicker").value;
+	var rgb = hexToRgb(color);
+	var getVar = "/rgblight?r=" + rgb.r + "&g=" + rgb.g + "&b=" + rgb.b;
+	sendLight(getVar);
+	return false;
+}
+var xmlhttpCol = new XMLHttpRequest();
+xmlhttpCol.onreadystatechange = function() {
+		if (xmlhttpCol.readyState == 4 && xmlhttpCol.status == 200) {
+			var currentColor = xmlhttpCol.responseText;
+		var rgb = currentColor.split("\n");
+		document.getElementById("html5colorpicker").value = "#" + RGBToHex(rgb[0],rgb[1],rgb[2]);
+		}
+	};
+function changeColorHtml()
+{
+	var url = "/getRGB";
+	xmlhttpCol.open("GET", url, true);
+	xmlhttpCol.send();
+}
+    </script>
   </head>
-  <body>
+<body onload="changeColorHtml();">
     <h1>Home Automation</h1>
     <br>
     <button id="light1Button" type="button" class="btn btn-info" onClick="changeButton(1);">Light 1 is Off</button>
@@ -20,7 +73,12 @@
     <br>
     <button id="light4Button" type="button" class="btn btn-info" onClick="changeButton(4);">Light 4 is Off</button>
     <br>
-    <div style="height:300px;"></div>
+    <form style="width:60%;margin:auto;max-width:500px;" action="" method="get" onsubmit="return convert();">
+ 	<br>
+ 	<input type="color" name="color" id="html5colorpicker" value="#ff0000" style="width:95%;height:40px;" onchange="convert()">
+ 	</br>
+ 	</form>
+    <div style="height:200px;"></div>
     <button type="button" class="btn btn-info" onClick="location.reload();">Refresh</button>
     <script src="/socket.io/socket.io.js"></script>
     <script>
@@ -131,9 +189,10 @@
     }
   });
     </script>
+    
     <div style="text-align:left;clear:both;position:absolute;bottom:10px;Left:10px;">
     <br>
-    <a href="javascript:void(0)" onClick="cpuOn();">WAKE CPU</a>
+    <a href="/static/keypad/index.html">WAKE CPU</a>
     <br>
     <br>
     <a href="/static/logfile.html">LOGFILE</a>
